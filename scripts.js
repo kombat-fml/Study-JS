@@ -36,7 +36,10 @@ const appData = {
       'Перечислите возможные расходы за рассчитываемый период через запятую',
       'телефон, интернет, кино'
     );
-    appData.addExpenses = addExpenses.toLowerCase().split(', ');
+    appData.addExpenses = addExpenses.toLowerCase().split(',');
+    appData.addExpenses.forEach(function (item, i, arr) {
+      arr[i] = item.trim();
+    });
     appData.deposit = confirm('У вас есть депозит в банке');
     // цикл обязательных расходов, записывется как объект
     for (let i = 0; i < 2; i++) {
