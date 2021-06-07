@@ -1,6 +1,20 @@
 'use strict';
 
 let money;
+const startBtn = document.getElementById('start'),
+  incomeAdd = document.getElementsByTagName('button')[0],
+  expensesAdd = document.getElementsByTagName('button')[1],
+  depositCheck = document.querySelector('#deposit-check'),
+  additionalIncomeItems = document.querySelectorAll('.additional_income-item'),
+  outputElems = document.querySelectorAll('[class$="-value"]'),
+  salaryAmount = document.querySelector('.salary-amount'),
+  incomeTitle = document.querySelector('.income-title'),
+  incomeAmount = document.querySelector('.income-amount'),
+  expensesTitle = document.querySelector('.expenses-title'),
+  expensesAmount = document.querySelector('.expenses-amount'),
+  additionalExpensesItem = document.querySelector('.additional_expenses-item'),
+  targetAmount = document.querySelector('.target-amount'),
+  periodSelect = document.querySelector('.period-select');
 
 function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);

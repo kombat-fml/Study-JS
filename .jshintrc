@@ -10,10 +10,10 @@
 	"browser": true,
 	"devel": true,
 	"jquery": true,
-	"esversion": 9,
+	"esversion": 6,
 	"eqeqeq": true,
 	"latedef": true,
 	"noempty": true,
-  "funcscope": true,
-  "node": true
+    "funcscope": true,
+    "node": true
 }
