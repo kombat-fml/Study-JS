@@ -39,22 +39,15 @@ const formatNumber = function (n) {
   return Math.floor(n / 10) === 0 ? '0' + n : n;
 };
 
-setInterval(function () {
+const prepareStrings = function () {
   const date = new Date();
-  let htmlString1, htmlString2;
-  htmlString1 = `Сегодня ${week[date.getDay()]}, ${date.getDate()} ${
-    month[date.getMonth()]
-  }, ${date.getHours()} час${endingWord(date.getHours(), 'hours')} ${date.getMinutes()} минут${endingWord(
-    date.getMinutes(),
-    'min'
-  )} ${date.getSeconds()} секунд${endingWord(date.getSeconds(), 'seconds')}`;
+  time1.textContent = `Сегодня ${week[date.getDay()]}, ${date.getDate()} ${month[date.getMonth()]},
+  ${date.getHours()} час${endingWord(date.getHours(), 'hours')}
+  ${date.getMinutes()} минут${endingWord(date.getMinutes(), 'min')}
+  ${date.getSeconds()} секунд${endingWord(date.getSeconds(), 'seconds')}`;
 
-  htmlString2 = `${formatNumber(date.getDate())}.${formatNumber(
-    date.getMonth()
-  )}.${date.getFullYear()} - ${formatNumber(date.getHours())}:${formatNumber(date.getMinutes())}:${formatNumber(
-    date.getSeconds()
-  )}
-  `;
-  time1.textContent = htmlString1;
-  time2.textContent = htmlString2;
-}, 1000);
+  time2.textContent = `${formatNumber(date.getDate())}.${formatNumber(date.getMonth())}.${date.getFullYear()} -
+  ${formatNumber(date.getHours())}:${formatNumber(date.getMinutes())}:${formatNumber(date.getSeconds())}`;
+};
+
+setInterval(prepareStrings, 1000);
