@@ -21,4 +21,3 @@ listBook5[4].after(listBook5[2]);
 listBook5[7].after(listBook5[5]);
 newElem.textContent = 'Глава 8: За пределами ES6';
 listBook6[listBook6.length - 1].before(newElem);
-console.log(listBook2);
