@@ -18,7 +18,9 @@ const startBtn = document.getElementById('start'),
   expensesMonthValue = document.querySelector('.expenses_month-value');
 let expensesItems = document.querySelectorAll('.expenses-items'),
   incomeItems = document.querySelectorAll('.income-items'),
-  periodAmount = document.querySelector('.period-amount');
+  periodAmount = document.querySelector('.period-amount'),
+  listenedInputsName = document.querySelectorAll('input[placeholder="Наименование"]'),
+  listenedInputsSum = document.querySelectorAll('input[placeholder="Сумма"]');
 
 function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
@@ -64,8 +66,18 @@ const appData = {
       incomePeriodValue.value = appData.calcSavedMoney();
     });
   },
+  replaceDigit: function () {
+    this.value = this.value.replace(/[^а-яА-ЯёЁ ,.?!]/, '');
+  },
+  replaceLetter: function () {
+    this.value = this.value.replace(/\D/, '');
+  },
   addExpensesBlock: function () {
     let cloneExpensesItem = expensesItems[0].cloneNode(true);
+    cloneExpensesItem.children[0].value = '';
+    cloneExpensesItem.children[0].addEventListener('input', appData.replaceDigit);
+    cloneExpensesItem.children[1].value = '';
+    cloneExpensesItem.children[1].addEventListener('input', appData.replaceLetter);
     expensesItems[0].parentNode.insertBefore(cloneExpensesItem, expensesAdd);
     expensesItems = document.querySelectorAll('.expenses-items');
 
@@ -75,6 +87,10 @@ const appData = {
   },
   addIncomeBlock: function () {
     let cloneIncomeItem = incomeItems[0].cloneNode(true);
+    cloneIncomeItem.children[0].value = '';
+    cloneIncomeItem.children[0].addEventListener('input', appData.replaceDigit);
+    cloneIncomeItem.children[1].value = '';
+    cloneIncomeItem.children[1].addEventListener('input', appData.replaceLetter);
     incomeItems[0].parentNode.insertBefore(cloneIncomeItem, incomeAdd);
     incomeItems = document.querySelectorAll('.income-items');
 
@@ -176,6 +192,13 @@ const enablingStart = function () {
     startBtn.disabled = true;
   }
 };
+
+listenedInputsName.forEach(function (item) {
+  item.addEventListener('input', appData.replaceDigit);
+});
+listenedInputsSum.forEach(function (item) {
+  item.addEventListener('input', appData.replaceLetter);
+});
 
 enablingStart();
 salaryAmount.addEventListener('input', enablingStart);
