@@ -1,6 +1,7 @@
 'use strict';
 
 const startBtn = document.getElementById('start'),
+  cancelBtn = document.getElementById('cancel'),
   incomeAdd = document.getElementsByTagName('button')[0],
   expensesAdd = document.getElementsByTagName('button')[1],
   depositCheck = document.querySelector('#deposit-check'),
@@ -40,28 +41,66 @@ const appData = {
   budgetMonth: 0,
   expensesMonth: 0,
   start: function () {
-    appData.budget = +salaryAmount.value;
+    this.budget = +salaryAmount.value;
 
-    appData.getExpenses();
-    appData.getExpensesMonth();
-    appData.getAddExpenses();
+    this.getExpenses();
+    this.getExpensesMonth();
+    this.getAddExpenses();
 
-    appData.getIncome();
-    appData.getIncomeMonth();
-    appData.getAddIncome();
+    this.getIncome();
+    this.getIncomeMonth();
+    this.getAddIncome();
 
-    appData.getBudget();
+    this.getBudget();
 
-    appData.showResult();
+    this.showResult();
+    this.disableCalc();
+  },
+  disableCalc: function () {
+    const dataInputs = document.querySelector('.data').querySelectorAll('input[type="text"]');
+    dataInputs.forEach(function (item) {
+      item.disabled = true;
+    });
+    startBtn.style.display = 'none';
+    cancelBtn.style.display = 'Block';
+  },
+  removeInputs: function () {
+    incomeItems = document.querySelectorAll('.income-items');
+    if (incomeItems.length > 1) {
+      for (let i = incomeItems.length - 1; i > 0; i--) {
+        incomeItems[i].remove();
+      }
+    }
+    expensesItems = document.querySelectorAll('.expenses-items');
+    if (expensesItems.length > 1) {
+      for (let i = expensesItems.length - 1; i > 0; i--) {
+        expensesItems[i].remove();
+      }
+    }
+  },
+  reset: function () {
+    this.removeInputs();
+    const allInputs = document.querySelectorAll('input');
+    allInputs.forEach(function (item) {
+      item.value = '';
+      item.disabled = false;
+    });
+    expensesAdd.style.display = 'Block';
+    incomeAdd.style.display = 'Block';
+    periodSelect.value = '1';
+    periodAmount.textContent = periodSelect.value;
+    cancelBtn.style.display = 'none';
+    startBtn.style.display = 'Block';
+    startBtn.disabled = true;
   },
   showResult: function () {
-    budgetMonthValue.value = appData.budgetMonth;
-    budgetDayValue.value = appData.budgetDay;
-    expensesMonthValue.value = appData.expensesMonth;
-    additionalExpensesValue.value = appData.addExpenses.join(', ');
-    additionalIncomeValue.value = appData.addIncome.join(', ');
-    targetMonthValue.value = appData.getTargetMonth();
-    incomePeriodValue.value = appData.calcSavedMoney();
+    budgetMonthValue.value = this.budgetMonth;
+    budgetDayValue.value = this.budgetDay;
+    expensesMonthValue.value = this.expensesMonth;
+    additionalExpensesValue.value = this.addExpenses.join(', ');
+    additionalIncomeValue.value = this.addIncome.join(', ');
+    targetMonthValue.value = this.getTargetMonth();
+    incomePeriodValue.value = this.calcSavedMoney();
     periodSelect.addEventListener('input', function () {
       incomePeriodValue.value = appData.calcSavedMoney();
     });
@@ -134,45 +173,45 @@ const appData = {
     });
   },
   getExpensesMonth: function () {
-    for (let key in appData.expenses) {
-      appData.expensesMonth += +appData.expenses[key];
+    for (let key in this.expenses) {
+      this.expensesMonth += +this.expenses[key];
     }
   },
   getIncomeMonth: function () {
-    for (let key in appData.income) {
-      appData.incomeMonth += +appData.income[key];
+    for (let key in this.income) {
+      this.incomeMonth += +this.income[key];
     }
   },
   getBudget: function () {
-    appData.budgetMonth = appData.budget + appData.incomeMonth - appData.expensesMonth;
-    appData.budgetDay = Math.floor(appData.budgetMonth / 30);
+    this.budgetMonth = this.budget + this.incomeMonth - this.expensesMonth;
+    this.budgetDay = Math.floor(this.budgetMonth / 30);
   },
   getTargetMonth: function () {
-    return Math.ceil(targetAmount.value / appData.budgetMonth);
+    return Math.ceil(targetAmount.value / this.budgetMonth);
   },
   getStatusIncome: function () {
-    if (appData.budgetDay >= 1200) {
+    if (this.budgetDay >= 1200) {
       return 'У вас высокий уровень дохода';
-    } else if (appData.budgetDay >= 600 && appData.budgetDay < 1200) {
+    } else if (this.budgetDay >= 600 && this.budgetDay < 1200) {
       return 'У вас средний уровень дохода';
-    } else if (appData.budgetDay >= 0 && appData.budgetDay < 600) {
+    } else if (this.budgetDay >= 0 && this.budgetDay < 600) {
       return 'К сожалению у вас низкий уровень дохода';
     } else {
       return 'Что то пошло не так';
     }
   },
   getInfoDeposit: function () {
-    if (appData.deposit) {
+    if (this.deposit) {
       do {
-        appData.percentDeposit = prompt('Какой годовой процент депозита?', 10);
-      } while (!isNumber(appData.percentDeposit));
+        this.percentDeposit = prompt('Какой годовой процент депозита?', 10);
+      } while (!isNumber(this.percentDeposit));
       do {
-        appData.moneyDeposit = prompt('Какая сумма заложена?', 10000);
-      } while (!isNumber(appData.moneyDeposit));
+        this.moneyDeposit = prompt('Какая сумма заложена?', 10000);
+      } while (!isNumber(this.moneyDeposit));
     }
   },
   calcSavedMoney: function () {
-    return appData.budgetMonth * periodSelect.value;
+    return this.budgetMonth * periodSelect.value;
   },
 };
 
@@ -203,11 +242,17 @@ listenedInputsSum.forEach(function (item) {
 enablingStart();
 salaryAmount.addEventListener('input', enablingStart);
 
-startBtn.addEventListener('click', appData.start);
+startBtn.addEventListener('click', () => {
+  appData.start();
+});
+cancelBtn.addEventListener('click', () => {
+  appData.reset();
+});
 
 expensesAdd.addEventListener('click', appData.addExpensesBlock);
 incomeAdd.addEventListener('click', appData.addIncomeBlock);
 
+periodSelect.value = '1';
 periodAmount.textContent = periodSelect.value;
 periodSelect.addEventListener('input', function () {
   periodAmount.textContent = periodSelect.value;
