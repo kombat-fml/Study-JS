@@ -58,6 +58,9 @@ const appData = {
   },
   disableCalc: function () {
     const dataInputs = document.querySelector('.data').querySelectorAll('input[type="text"]');
+    const btnPlus = document.querySelectorAll('.btn_plus');
+    btnPlus[0].disabled = true;
+    btnPlus[1].disabled = true;
     dataInputs.forEach(function (item) {
       item.disabled = true;
     });
@@ -78,9 +81,26 @@ const appData = {
       }
     }
   },
+  wipeData: function () {
+    this.income = {};
+    this.incomeMonth = 0;
+    this.addIncome = [];
+    this.expenses = {};
+    this.addExpenses = [];
+    this.deposit = false;
+    this.percentDeposit = 0;
+    this.moneyDeposit = 0;
+    this.budget = 0;
+    this.budgetDay = 0;
+    this.budgetMonth = 0;
+    this.expensesMonth = 0;
+  },
   reset: function () {
     this.removeInputs();
     const allInputs = document.querySelectorAll('input');
+    const btnPlus = document.querySelectorAll('.btn_plus');
+    btnPlus[0].disabled = false;
+    btnPlus[1].disabled = false;
     allInputs.forEach(function (item) {
       item.value = '';
       item.disabled = false;
@@ -92,6 +112,7 @@ const appData = {
     cancelBtn.style.display = 'none';
     startBtn.style.display = 'Block';
     startBtn.disabled = true;
+    this.wipeData();
   },
   showResult: function () {
     budgetMonthValue.value = this.budgetMonth;
