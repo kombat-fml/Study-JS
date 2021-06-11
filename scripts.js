@@ -98,8 +98,6 @@ const appData = {
     this.budgetDay = 0;
     this.budgetMonth = 0;
     this.expensesMonth = 0;
-    console.log(this);
-    console.log(incomeItems);
   },
   reset: function () {
     this.removeInputs();
