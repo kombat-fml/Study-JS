@@ -115,7 +115,6 @@ AppData.prototype.reset = function () {
     item.value = '';
     item.disabled = false;
   });
-  console.log('expensesItems: ', expensesItems);
   expensesAdd.style.display = 'Block';
   incomeAdd.style.display = 'Block';
   periodSelect.value = '1';
@@ -252,6 +251,7 @@ AppData.prototype.getInfoDeposit = function () {
 AppData.prototype.calcSavedMoney = function () {
   return this.budgetMonth * periodSelect.value;
 };
+
 AppData.prototype.addingEventListeners = function () {
   const _this = this;
   listenedInputsName.forEach(function (item) {
@@ -260,8 +260,8 @@ AppData.prototype.addingEventListeners = function () {
   listenedInputsSum.forEach(function (item) {
     item.addEventListener('input', _this.replaceLetter);
   });
-  expensesAdd.addEventListener('click', _this.addExpensesBlock);
-  incomeAdd.addEventListener('click', _this.addIncomeBlock);
+  expensesAdd.addEventListener('click', _this.addExpensesBlock.bind(_this));
+  incomeAdd.addEventListener('click', _this.addIncomeBlock.bind(_this));
 
   startBtn.addEventListener('click', () => {
     _this.start();
@@ -269,20 +269,17 @@ AppData.prototype.addingEventListeners = function () {
   cancelBtn.addEventListener('click', () => {
     _this.reset();
   });
-};
+  _this.enablingStart();
+  salaryAmount.addEventListener('input', _this.enablingStart);
 
-const appData = new AppData();
-
-const returnToUpperArray = function (arr) {
-  let copyArr = [];
-  arr.forEach(function (item, i, array) {
-    let preparedString = item[0].toUpperCase() + item.slice(1);
-    copyArr.push(preparedString);
+  periodSelect.value = '1';
+  periodAmount.textContent = periodSelect.value;
+  periodSelect.addEventListener('input', function () {
+    periodAmount.textContent = periodSelect.value;
   });
-  return copyArr;
 };
 
-const enablingStart = function () {
+AppData.prototype.enablingStart = function () {
   if (isNumber(salaryAmount.value) && salaryAmount.value !== '' && salaryAmount.value !== null) {
     startBtn.disabled = false;
   } else {
@@ -290,13 +287,5 @@ const enablingStart = function () {
   }
 };
 
-enablingStart();
-salaryAmount.addEventListener('input', enablingStart);
-
-periodSelect.value = '1';
-periodAmount.textContent = periodSelect.value;
-periodSelect.addEventListener('input', function () {
-  periodAmount.textContent = periodSelect.value;
-});
-
+const appData = new AppData();
 appData.addingEventListeners();
