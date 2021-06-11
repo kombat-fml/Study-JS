@@ -71,12 +71,16 @@ const appData = {
     incomeItems = document.querySelectorAll('.income-items');
     if (incomeItems.length > 1) {
       for (let i = incomeItems.length - 1; i > 0; i--) {
+        incomeItems[i].children[0].value = '';
+        incomeItems[i].children[1].value = '';
         incomeItems[i].remove();
       }
     }
     expensesItems = document.querySelectorAll('.expenses-items');
     if (expensesItems.length > 1) {
       for (let i = expensesItems.length - 1; i > 0; i--) {
+        expensesItems[i].children[0].value = '';
+        expensesItems[i].children[1].value = '';
         expensesItems[i].remove();
       }
     }
@@ -94,6 +98,8 @@ const appData = {
     this.budgetDay = 0;
     this.budgetMonth = 0;
     this.expensesMonth = 0;
+    console.log(this);
+    console.log(incomeItems);
   },
   reset: function () {
     this.removeInputs();
