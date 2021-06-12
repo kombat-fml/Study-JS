@@ -1,12 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
-  function DomElement() {
-    this.selector = '';
-    this.height = '100px';
-    this.width = '100px';
-    this.bg = 'red';
-    this.position = 'absolute';
+  function DomElement(height, width, background, position) {
+    this.height = height;
+    this.width = width;
+    this.bg = background;
+    this.position = position;
   }
 
   DomElement.prototype.createElement = function () {
@@ -23,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return elem;
   };
 
-  let div = new DomElement();
+  let div = new DomElement('100px', '100px', 'red', 'absolute');
   const divElement = div.createElement();
 
   document.body.addEventListener('keydown', function (event) {
