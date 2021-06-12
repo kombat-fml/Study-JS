@@ -1,21 +1,21 @@
 'use strict';
 
-function DomElement() {
-  this.selector = '';
-  this.height = '200px';
-  this.width = '300px';
-  this.bg = 'red';
-  this.fontSize = '16px';
+function DomElement(selector, height, width, background, fontSize) {
+  this.selector = selector;
+  this.height = height;
+  this.width = width;
+  this.bg = background;
+  this.fontSize = fontSize;
 }
 
-DomElement.prototype.createElement = function (element) {
+DomElement.prototype.createElement = function () {
   let elem;
-  if (element[0] === '.') {
+  if (this.selector[0] === '.') {
     elem = document.createElement('div');
-    elem.className = element.substr(1);
-  } else if (element[0] === '#') {
+    elem.className = this.selector.substr(1);
+  } else if (this.selector[0] === '#') {
     elem = document.createElement('p');
-    elem.id = element.substr(1);
+    elem.id = this.selector.substr(1);
   }
   elem.style.height = this.height;
   elem.style.width = this.width;
@@ -26,5 +26,5 @@ DomElement.prototype.createElement = function (element) {
   document.body.append(elem);
 };
 
-let div = new DomElement();
-div.createElement('#fdgfd');
+let div = new DomElement('#fdgfd', '200px', '300px', 'red', '16px');
+div.createElement();
