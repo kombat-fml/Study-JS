@@ -11,6 +11,8 @@ body {
 
 button {
   padding: 10px 20px;
+  margin-right: 10px;
+  cursor: pointer;
 }
 ul {
   list-style-type: none;
@@ -51,4 +53,7 @@ li:not(:last-child) {
   -webkit-appearance: none;
   -moz-appearance: none;
   background-image: url('trash.png');
+}
+#logout {
+  display: none;
 }

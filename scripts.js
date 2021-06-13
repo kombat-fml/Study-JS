@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const span = document.getElementById('username'),
     registrationBtn = document.getElementById('registration'),
     loginBtn = document.getElementById('login'),
+    logoutBtn = document.getElementById('logout'),
     list = document.getElementById('list'),
     month = [
       'Января',
@@ -21,18 +22,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let usersData;
 
-  const findUser = function (place, value) {
-    let flag = false;
-    usersData.forEach(function (item, i) {
-      switch (true) {
-        case place === 'user': {
-          if (value === item.name + item.surname) {
-            flag = true;
-            return true;
-          }
-        }
+  const findUser = function (value, id) {
+    let flag = false,
+      index;
+    if (id !== undefined) {
+      if (usersData[id].password === value) {
+        flag = true;
       }
-    });
+    } else {
+      usersData.forEach(function (item, i) {
+        if (value === item.login) {
+          flag = true;
+          index = i;
+          return true;
+        }
+      });
+    }
+    return [flag, index];
   };
 
   const readFromLocalStorage = function () {
@@ -76,7 +82,12 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const registerUser = function () {
-    const user = prompt('Введите имя и фамилию пользователя через пробел').trim();
+    let user = prompt('Введите имя и фамилию пользователя через пробел');
+    if (user === null) {
+      return;
+    } else {
+      user = user.trim();
+    }
     switch (true) {
       case user.match(/ /g) === null:
         if (confirm('Ошибка! В данных введено одно слово, хотите ввести снова?')) {
@@ -94,10 +105,24 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
         break;
-      default:
     }
-    const login = prompt('Придумайте логин');
+    let login = prompt('Придумайте логин'),
+      promptLogin;
+    if (findUser(login)[0]) {
+      do {
+        promptLogin = confirm('Ошибка! Пользователь с таким логином уже существует. Хотите ввести снова?');
+        if (promptLogin) {
+          login = prompt('Придумайте логин');
+        } else {
+          return;
+        }
+      } while (promptLogin && findUser(login)[0]);
+    }
+
     const pass = prompt('Придумайте пароль');
+    if (pass === null) {
+      return;
+    }
     const date = new Date();
     const newUser = {
       name: user.substring(0, user.match(/ /).index),
@@ -111,7 +136,43 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
   };
 
+  const loginUser = function (id) {
+    loginBtn.style.display = 'none';
+    logoutBtn.style.display = 'inline-block';
+    span.textContent = usersData[id].name;
+  };
+
+  const logoutUser = function () {
+    loginBtn.style.display = 'inline-block';
+    logoutBtn.style.display = 'none';
+    span.textContent = 'Аноним';
+  };
+
+  const authUser = function () {
+    const login = prompt('Введите логин');
+    if (login === null) {
+      return;
+    }
+    const loginData = findUser(login);
+    if (!loginData[0]) {
+      alert('Пользователь с таким логином не найден');
+      return;
+    }
+    const pass = prompt('Введите пароль');
+    if (pass === null) {
+      return;
+    }
+    const passData = findUser(pass, loginData[1]);
+    if (passData[0]) {
+      loginUser(loginData[1]);
+    } else {
+      alert('Неверный пароль');
+    }
+  };
+
   registrationBtn.addEventListener('click', registerUser);
+  loginBtn.addEventListener('click', authUser);
+  logoutBtn.addEventListener('click', logoutUser);
   usersData = readFromLocalStorage();
   render();
 });
