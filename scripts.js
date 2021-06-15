@@ -136,9 +136,9 @@ class AppData {
     let cloneItem = items[0].cloneNode(true);
     const str = cloneItem.className.split('-')[0];
     cloneItem.children[0].value = '';
-    cloneItem.children[0].addEventListener('input', AppData.replaceDigit);
+    cloneItem.children[0].addEventListener('input', this.replaceDigit);
     cloneItem.children[1].value = '';
-    cloneItem.children[1].addEventListener('input', AppData.replaceLetter);
+    cloneItem.children[1].addEventListener('input', this.replaceLetter);
     items[0].parentNode.insertBefore(cloneItem, block);
     items = document.querySelectorAll(`.${str}-items`);
 
@@ -217,10 +217,10 @@ class AppData {
   }
   addingEventListeners() {
     listenedInputsName.forEach((item) => {
-      item.addEventListener('input', AppData.replaceDigit);
+      item.addEventListener('input', this.replaceDigit);
     });
     listenedInputsSum.forEach((item) => {
-      item.addEventListener('input', AppData.replaceLetter);
+      item.addEventListener('input', this.replaceLetter);
     });
     expensesAdd.addEventListener('click', () => {
       this.addExpInc(expensesItems, expensesAdd);
@@ -254,14 +254,13 @@ class AppData {
       startBtn.disabled = true;
     }
   }
+  replaceDigit() {
+    this.value = this.value.replace(/[^а-яА-ЯёЁ ,.?!]/, '');
+  }
+  replaceLetter() {
+    this.value = this.value.replace(/\D/, '');
+  }
 }
-
-AppData.replaceDigit = function () {
-  this.value = this.value.replace(/[^а-яА-ЯёЁ ,.?!]/, '');
-};
-AppData.replaceLetter = function () {
-  this.value = this.value.replace(/\D/, '');
-};
 
 const appData = new AppData();
 appData.addingEventListeners();
