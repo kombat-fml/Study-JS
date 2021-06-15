@@ -138,9 +138,9 @@ class AppData {
   addExpensesBlock() {
     let cloneExpensesItem = expensesItems[0].cloneNode(true);
     cloneExpensesItem.children[0].value = '';
-    cloneExpensesItem.children[0].addEventListener('input', AppData.replaceDigit);
+    cloneExpensesItem.children[0].addEventListener('input', this.replaceDigit);
     cloneExpensesItem.children[1].value = '';
-    cloneExpensesItem.children[1].addEventListener('input', AppData.replaceLetter);
+    cloneExpensesItem.children[1].addEventListener('input', this.replaceLetter);
     expensesItems[0].parentNode.insertBefore(cloneExpensesItem, expensesAdd);
     expensesItems = document.querySelectorAll('.expenses-items');
 
@@ -151,9 +151,9 @@ class AppData {
   addIncomeBlock() {
     let cloneIncomeItem = incomeItems[0].cloneNode(true);
     cloneIncomeItem.children[0].value = '';
-    cloneIncomeItem.children[0].addEventListener('input', AppData.replaceDigit);
+    cloneIncomeItem.children[0].addEventListener('input', this.replaceDigit);
     cloneIncomeItem.children[1].value = '';
-    cloneIncomeItem.children[1].addEventListener('input', AppData.replaceLetter);
+    cloneIncomeItem.children[1].addEventListener('input', this.replaceLetter);
     incomeItems[0].parentNode.insertBefore(cloneIncomeItem, incomeAdd);
     incomeItems = document.querySelectorAll('.income-items');
 
@@ -239,10 +239,10 @@ class AppData {
   }
   addingEventListeners() {
     listenedInputsName.forEach((item) => {
-      item.addEventListener('input', AppData.replaceDigit);
+      item.addEventListener('input', this.replaceDigit);
     });
     listenedInputsSum.forEach((item) => {
-      item.addEventListener('input', AppData.replaceLetter);
+      item.addEventListener('input', this.replaceLetter);
     });
     expensesAdd.addEventListener('click', () => {
       this.addExpensesBlock();
@@ -276,14 +276,13 @@ class AppData {
       startBtn.disabled = true;
     }
   }
+  replaceDigit() {
+    this.value = this.value.replace(/[^а-яА-ЯёЁ ,.?!]/, '');
+  }
+  replaceLetter() {
+    this.value = this.value.replace(/\D/, '');
+  }
 }
-
-AppData.replaceDigit = function () {
-  this.value = this.value.replace(/[^а-яА-ЯёЁ ,.?!]/, '');
-};
-AppData.replaceLetter = function () {
-  this.value = this.value.replace(/\D/, '');
-};
 
 const appData = new AppData();
 appData.addingEventListeners();
