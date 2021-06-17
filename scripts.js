@@ -1,20 +1,37 @@
 'use strict';
-const input = document.querySelector('.input'),
-  text = document.querySelector('.text');
+const start = document.querySelector('.start'),
+  reset = document.querySelector('.reset'),
+  line = document.querySelector('.line');
 
-function print() {
-  text.textContent = input.value;
-}
+let animation = null,
+  corner = 0,
+  speed = 4;
 
-function debounce(time) {
-  return function () {
-    let previousCall = this.lastCall;
-    this.lastCall = Date.now();
-    if (previousCall && this.lastCall - previousCall <= time) {
-      clearTimeout(this.lastCallTimer);
-    }
-    this.lastCallTimer = setTimeout(() => print(), time);
-  };
-}
+const animate = () => {
+  corner += speed;
+  corner %= 360;
+  line.style.transform = `rotate(${corner}deg)`;
+  animation = requestAnimationFrame(animate);
+};
 
-input.addEventListener('input', debounce(300));
+const startAndStop = () => {
+  if (start.textContent === 'Старт') {
+    start.textContent = 'Стоп';
+    animation = requestAnimationFrame(animate);
+  } else {
+    cancelAnimationFrame(animation);
+    start.textContent = 'Старт';
+  }
+};
+
+const resetAnimation = () => {
+  if (animation) {
+    cancelAnimationFrame(animation);
+    corner = 0;
+    start.textContent = 'Старт';
+    line.style.transform = '';
+  }
+};
+
+start.addEventListener('click', startAndStop);
+reset.addEventListener('click', resetAnimation);
