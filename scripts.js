@@ -1,18 +1,20 @@
 'use strict';
+const input = document.querySelector('.input'),
+  text = document.querySelector('.text');
 
-const button = document.getElementById('button'),
-  container = document.querySelector('.container'),
-  heading = document.querySelector('#color');
+function print() {
+  text.textContent = input.value;
+}
 
-const randColor = function () {
-  return '#' + (Math.random().toString(16) + '000000').substr(2, 6);
-};
-const changeColor = function (color) {
-  button.style.color = color;
-  container.style.backgroundColor = color;
-  heading.textContent = color;
-};
+function debounce(time) {
+  return function () {
+    let previousCall = this.lastCall;
+    this.lastCall = Date.now();
+    if (previousCall && this.lastCall - previousCall <= time) {
+      clearTimeout(this.lastCallTimer);
+    }
+    this.lastCallTimer = setTimeout(() => print(), time);
+  };
+}
 
-button.addEventListener('click', function () {
-  changeColor(randColor());
-});
+input.addEventListener('input', debounce(300));
