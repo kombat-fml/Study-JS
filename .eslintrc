@@ -201,7 +201,7 @@
       }
     ],
     "arrow-parens": [
-      "error",
+      // "error",
       "as-needed"
     ],
     "arrow-body-style": [

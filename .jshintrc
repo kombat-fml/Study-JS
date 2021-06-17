@@ -5,7 +5,7 @@
 	"quotmark": false,
 	"maxlen": 120,
 	"trailing": true,
-	"curly": true,
+	"curly": false,
 	"strict": true,
 	"browser": true,
 	"devel": true,
