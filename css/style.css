@@ -46,21 +46,22 @@ body {
   background: #edf0f1;
   padding: 80px 0 0 0;
 }
+
 .container {
   max-width: 1200px;
-  width: 90%;
+  width: 96%;
   margin: 0 auto;
 }
 
 .todo-container {
   width: 100%;
   float: left;
-  padding: 15px;
+  padding: 15px 0;
 }
 
 .header {
   max-width: 1200px;
-  width: 90%;
+  width: 96%;
   height: 80px;
 
   position: fixed;
@@ -150,9 +151,8 @@ body {
 }
 
 .todo-buttons {
-  width: 100px;
+  /* width: 100px; */
   height: 50px;
-
   position: absolute;
   top: 0;
   right: 0;
@@ -194,8 +194,19 @@ body {
   background-image: url('../img/uncheck.png');
 }
 
+.todo-edit {
+  background-image: url('../img/pencil.png');
+}
+
+.todo-completed .todo-edit {
+  display: none;
+}
+
 .todo-completed .todo-complete {
   background-image: url('../img/check.png');
+}
+.todo-completed .text-todo {
+  text-decoration: line-through;
 }
 
 .todo-completed {
