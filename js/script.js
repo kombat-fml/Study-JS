@@ -64,11 +64,66 @@ class ToDo {
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
   }
 
+  expand(element) {
+    let times = 5;
+    requestAnimationFrame(function step() {
+      element.style.width = `${times}%`;
+      times += 2;
+      if (times > 40) element.children[1].style.display = 'block';
+      if (times <= 100) {
+        requestAnimationFrame(step);
+      } else {
+        element.style.width = '100%';
+      }
+    });
+  }
+
+  collapse(element) {
+    let times = 100;
+    const _this = this;
+    requestAnimationFrame(function step() {
+      element.style.width = `${times}%`;
+      times -= 2;
+      if (times < 40) element.children[1].style.display = 'none';
+      if (times > 5) {
+        requestAnimationFrame(step);
+      } else {
+        element.remove();
+        if (_this.todoData.get(element.key).completed) {
+          _this.todoCompleted.append(element);
+        } else {
+          _this.todoList.append(element);
+        }
+        _this.expand(element);
+      }
+    });
+  }
+
+  animateSwitchItem(element) {
+    element.style.float = 'right';
+    this.collapse(element);
+  }
+
+  animateDeleteItem(element) {
+    let times = 100;
+    // const _this = this;
+    requestAnimationFrame(function step() {
+      element.style.opacity = times / 100;
+      times -= 3;
+      if (times > 0) {
+        requestAnimationFrame(step);
+      } else {
+        element.remove();
+      }
+    });
+  }
+
   deleteItem(element) {
     const obj = this.todoData.get(element.closest('li').key);
     this.todoData.delete(obj.key);
     this.addToStorage();
-    this.render();
+    // this.render();
+    this.animateDeleteItem(element.closest('li'));
   }
 
   completedItem(element) {
@@ -78,17 +133,37 @@ class ToDo {
       completed: !obj.completed,
       key: obj.key,
     };
+    this.todoData.delete(newObj.key);
     this.todoData.set(newObj.key, newObj);
     this.addToStorage();
-    this.render();
+    this.animateSwitchItem(element.closest('li'));
   }
 
-  changeItem() {}
+  changeItem(span) {
+    const target = span.target;
+    const obj = this.todoData.get(target.closest('li').key);
+    target.contentEditable = 'false';
+    const newObj = {
+      value: target.textContent,
+      completed: obj.completed,
+      key: obj.key,
+    };
+    this.todoData.set(newObj.key, newObj);
+    this.addToStorage();
+  }
+
+  editItem(element) {
+    const span = element.closest('li').children[0];
+    span.contentEditable = 'true';
+    span.focus();
+    span.onblur = this.changeItem.bind(this);
+  }
 
   handler(event) {
     const target = event.target;
     if (target.classList.contains('todo-complete')) this.completedItem(target);
     if (target.classList.contains('todo-remove')) this.deleteItem(target);
+    if (target.classList.contains('todo-edit')) this.editItem(target);
   }
 
   init() {
