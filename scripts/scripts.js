@@ -50,39 +50,34 @@ window.addEventListener('DOMContentLoaded', () => {
     updateClock();
     timerId = setInterval(updateClock, 1000);
   };
-
-  countTimer('17 june 2021 12:43:50');
+  countTimer('27 june 2021 12:43:50');
 
   // меню
   const toggleMenu = () => {
     const btnMenu = document.querySelector('.menu'),
-      menu = document.querySelector('menu'),
-      closeBtn = document.querySelector('.close-btn'),
-      menuItems = menu.querySelectorAll('li>a');
+      menu = document.querySelector('menu');
 
     const handlerMenu = () => {
-      if (!menu.style.transform) {
-        menu.style.transform = `translateX(0)`;
+      if (!menu.classList.contains('active-menu')) {
+        menu.classList.add('active-menu');
       } else {
-        menu.style = ``;
+        menu.classList.remove('active-menu');
       }
     };
 
     btnMenu.addEventListener('click', handlerMenu);
-    closeBtn.addEventListener('click', handlerMenu);
-
-    for (const menuItem of menuItems) {
-      menuItem.addEventListener('click', handlerMenu);
-    }
+    menu.addEventListener('click', (event) => {
+      let target = event.target;
+      target = target.closest('a');
+      if (target) handlerMenu();
+    });
   };
-
   toggleMenu();
 
   //popup
   const togglePopUp = () => {
     const popup = document.querySelector('.popup'),
       popupBtn = document.querySelectorAll('.popup-btn'),
-      popupClose = document.querySelector('.popup-close'),
       popupContent = document.querySelector('.popup-content');
 
     const popupAnimate = ({ duration, draw, timing }) => {
@@ -100,6 +95,26 @@ window.addEventListener('DOMContentLoaded', () => {
 
         if (timeFraction < 1) requestAnimationFrame(popupAnimate);
       });
+    };
+
+    const closePopUp = () => {
+      if (clientWidth >= 768) {
+        popupAnimate({
+          duration: 800,
+          timing(timeFraction) {
+            return Math.pow(timeFraction, 5);
+          },
+          draw(progress) {
+            popupContent.style.top = -1 * progress * 100 + '%';
+          },
+        });
+        setTimeout(() => {
+          popup.classList.remove('active');
+        }, 800);
+      } else {
+        popupContent.style.top = '';
+        popup.classList.remove('active');
+      }
     };
 
     popupBtn.forEach((elem) => {
@@ -120,23 +135,15 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    popupClose.addEventListener('click', () => {
-      if (clientWidth >= 768) {
-        popupAnimate({
-          duration: 800,
-          timing(timeFraction) {
-            return Math.pow(timeFraction, 5);
-          },
-          draw(progress) {
-            popupContent.style.top = -1 * progress * 100 + '%';
-          },
-        });
-        setTimeout(() => {
-          popup.classList.remove('active');
-        }, 800);
+    popup.addEventListener('click', (event) => {
+      let target = event.target;
+      if (target.classList.contains('popup-close')) {
+        closePopUp();
       } else {
-        popupContent.style.top = '';
-        popup.classList.remove('active');
+        target = target.closest('.popup-content');
+        if (!target) {
+          closePopUp();
+        }
       }
     });
   };
@@ -171,4 +178,36 @@ window.addEventListener('DOMContentLoaded', () => {
     smoothlinks.forEach((elem) => elem.addEventListener('click', scrolled));
   };
   smoothscroll(0.3);
+
+  // табы
+  const tabs = () => {
+    const tabHeader = document.querySelector('.service-header'),
+      tab = tabHeader.querySelectorAll('.service-header-tab'),
+      tabContent = document.querySelectorAll('.service-tab');
+
+    const toggleTabContent = (index) => {
+      for (let i = 0; i < tabContent.length; i++) {
+        if (i === index) {
+          tab[i].classList.add('active');
+          tabContent[i].classList.remove('d-none');
+        } else {
+          tab[i].classList.remove('active');
+          tabContent[i].classList.add('d-none');
+        }
+      }
+    };
+
+    tabHeader.addEventListener('click', (event) => {
+      let target = event.target;
+      target = target.closest('.service-header-tab');
+      if (target) {
+        tab.forEach((item, i) => {
+          if (item === target) {
+            toggleTabContent(i);
+          }
+        });
+      }
+    });
+  };
+  tabs();
 });

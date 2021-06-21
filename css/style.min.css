@@ -99,12 +99,12 @@ body menu {
   justify-content: center;
   -webkit-transform: translateX(-100%);
   transform: translateX(-100%);
+  -webkit-transition: transform 0.5s ease-in-out;
+  transition: transform 0.5s ease-in-out;
 }
 body .active-menu {
-  -webkit-transition: 1s;
-  transition: 1s;
-  -webkit-transform: translateX(100%);
-  transform: translateX(100%);
+  -webkit-transform: translateX(0);
+  transform: translateX(0);
 }
 body ul {
   list-style: none;
@@ -928,10 +928,10 @@ footer .web {
   body nav {
     width: 100%;
   }
-  body .active-menu {
+  /* body .active-menu {
     -webkit-transform: translateX(0);
     transform: translateX(0);
-  }
+  } */
   body .underline {
     width: 100%;
   }
