@@ -407,7 +407,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const countSum = () => {
       let total = 0,
         countValue = 1,
-        dayValue = 1;
+        dayValue = 1,
+        timer = 0;
       const typeValue = +calcType.value,
         squareValue = +calcSquare.value;
 
@@ -424,7 +425,19 @@ window.addEventListener('DOMContentLoaded', () => {
       if (!!typeValue && !!squareValue) {
         total = price * typeValue * squareValue * countValue * dayValue;
       }
-      totalValue.textContent = Math.floor(total);
+
+      totalValue.textContent = timer;
+
+      const step = (time) => {
+        timer = timer + 21;
+        totalValue.textContent = timer;
+        if (timer < Math.floor(total)) {
+          requestAnimationFrame(step);
+        } else {
+          totalValue.textContent = Math.floor(total);
+        }
+      };
+      if (total) requestAnimationFrame(step);
     };
 
     calcBlock.addEventListener('change', (event) => {
