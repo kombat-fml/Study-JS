@@ -393,7 +393,7 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     });
   };
-  inputs();
+  // inputs();
 
   // расчеты в калькуляторе
   const calc = (price = 100) => {
@@ -448,4 +448,18 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   };
   calc(100);
+
+  const valid = new Validator({
+    selector: '#form1',
+    pattern: {
+      phone: /^\d+$/,
+      zip: /\d{5,6}/,
+    },
+    method: {
+      phone: [['notEmpty'], ['pattern', 'phone']],
+      email: [['notEmpty'], ['pattern', 'email']],
+    },
+  });
+
+  valid.init();
 });
