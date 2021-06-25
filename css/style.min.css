@@ -268,10 +268,13 @@ main .main-form-input {
   height: 8rem;
   border: 1px solid #fefefe;
 }
-main .main-form-input input {
+.main-form-row {
+  margin-top: -3rem;
+}
+/* main .main-form-input input {
   -webkit-transform: translateY(-3rem);
   transform: translateY(-3rem);
-}
+} */
 main .main-form .form-btn {
   display: inline-block;
   text-align: center;

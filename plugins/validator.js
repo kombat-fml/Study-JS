@@ -32,8 +32,6 @@ class Validator {
       },
     };
     if (this.method) {
-      console.log(this.method);
-      console.log(elem.id);
       const method = this.method[elem.id];
 
       if (method) {
