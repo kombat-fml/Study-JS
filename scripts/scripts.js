@@ -465,7 +465,9 @@ window.addEventListener('DOMContentLoaded', () => {
   // send-ajax-form
   const sendForm = (formId) => {
     const errorMsg = "Что-то пошло не так...",
-      loadMsg = "Загрузка...",
+      loadMsg = `
+      <div class="preload-block"></div>
+      `,
       successMsg = "Сообщение отправлено! Скоро с Вами свяжемся!";
 
     const form = document.getElementById(formId);
@@ -495,7 +497,7 @@ window.addEventListener('DOMContentLoaded', () => {
         body[val[0]] = val[1];
       }
       form.appendChild(statusMessage);
-      statusMessage.textContent = loadMsg;
+      statusMessage.innerHTML = loadMsg;
       postData(body,
         () => {
           statusMessage.textContent = successMsg;
