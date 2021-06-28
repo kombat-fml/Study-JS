@@ -97,3 +97,43 @@ class Validator {
     this.pattern.email = this.pattern.email ? this.pattern.email : /^\w+@\w+\.\w{2,}$/;
   }
 }
+
+const valid1 = new Validator({
+  selector: '#form1',
+  pattern: {
+    name: /^[а-яА-ЯЁ -]*$/,
+  },
+  method: {
+    'form1-phone': [['notEmpty'], ['pattern', 'phone']],
+    'form1-email': [['notEmpty'], ['pattern', 'email']],
+    'form1-name': [['notEmpty'], ['pattern', 'name']],
+  },
+});
+const valid2 = new Validator({
+  selector: '#form2',
+  pattern: {
+    name: /^[а-яА-ЯЁ -]*$/,
+    message: /^[а-яА-ЯЁ -]*$/,
+  },
+  method: {
+    'form2-phone': [['notEmpty'], ['pattern', 'phone']],
+    'form2-email': [['notEmpty'], ['pattern', 'email']],
+    'form2-name': [['notEmpty'], ['pattern', 'name']],
+    'form2-message': [['notEmpty'], ['pattern', 'message']],
+  },
+});
+const valid3 = new Validator({
+  selector: '#form3',
+  pattern: {
+    name: /^[а-яА-ЯЁ -]*$/,
+  },
+  method: {
+    'form3-name': [['notEmpty'], ['pattern', 'name']],
+    'form3-phone': [['notEmpty'], ['pattern', 'phone']],
+    'form3-email': [['notEmpty'], ['pattern', 'email']],
+  },
+});
+
+valid1.init();
+valid2.init();
+valid3.init();

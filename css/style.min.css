@@ -712,6 +712,9 @@ footer .web {
   font-size: 3rem;
   color: #19b5fe;
 }
+.popup div:last-of-type {
+  color: #fff
+}
 .thanks-block {
   padding-top: 10rem;
   background-image: url(../images/main-bg.jpg);

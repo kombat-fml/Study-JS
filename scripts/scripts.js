@@ -26,7 +26,13 @@ window.addEventListener('DOMContentLoaded', () => {
         hours = Math.floor((timeRemaining / 60 / 60) % 24),
         days = Math.floor(timeRemaining / 60 / 60 / 24);
 
-      return { timeRemaining, days, hours, minutes, seconds };
+      return {
+        timeRemaining,
+        days,
+        hours,
+        minutes,
+        seconds
+      };
     };
     let timerId = null;
     const updateClock = () => {
@@ -90,7 +96,11 @@ window.addEventListener('DOMContentLoaded', () => {
       popupBtn = document.querySelectorAll('.popup-btn'),
       popupContent = document.querySelector('.popup-content');
 
-    const popupAnimate = ({ duration, draw, timing }) => {
+    const popupAnimate = ({
+      duration,
+      draw,
+      timing
+    }) => {
       const start = performance.now();
 
       requestAnimationFrame(function popupAnimate(time) {
@@ -176,9 +186,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
         const progress = time - start;
         const r =
-          coordinateElem < 0
-            ? Math.max(pageY - progress / SPEED, pageY + coordinateElem)
-            : Math.min(pageY + progress / SPEED, pageY + coordinateElem);
+          coordinateElem < 0 ?
+          Math.max(pageY - progress / SPEED, pageY + coordinateElem) :
+          Math.min(pageY + progress / SPEED, pageY + coordinateElem);
         window.scrollTo(0, r);
         if (r < pageY + coordinateElem) requestAnimationFrame(step);
       };
@@ -333,13 +343,16 @@ window.addEventListener('DOMContentLoaded', () => {
   // инпуты
   const inputs = () => {
     const nameReplacer = function () {
-      this.value = this.value.replace(/[^а-яё -]/gi, '');
+      this.value = this.value.replace(/[^а-яё ]/gi, '');
+    };
+    const msgReplacer = function () {
+      this.value = this.value.replace(/[^а-яё ,\.!\?;\d]/gi, '');
     };
     const mailReplacer = function () {
       this.value = this.value.replace(/(?![~@\-!_\.\*'])[\W\d]/gi, '');
     };
     const phoneReplacer = function () {
-      this.value = this.value.replace(/(?![\(\)\-])\D/gi, '');
+      this.value = this.value.replace(/(?![+])\D/gi, '');
     };
     const trimStr = function (elem) {
       elem.value = elem.value.replace(/^[ \-]*/, '');
@@ -362,7 +375,7 @@ window.addEventListener('DOMContentLoaded', () => {
       mailInputs = document.querySelectorAll('[name="user_email"]'),
       phoneInputs = document.querySelectorAll('[name="user_phone"]');
 
-    messageInputs.addEventListener('input', nameReplacer);
+    messageInputs.addEventListener('input', msgReplacer);
     messageInputs.addEventListener('blur', function () {
       trimStr(this);
       replaceSpaces(this);
@@ -393,7 +406,7 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     });
   };
-  // inputs();
+  inputs();
 
   // расчеты в калькуляторе
   const calc = (price = 100) => {
@@ -449,43 +462,54 @@ window.addEventListener('DOMContentLoaded', () => {
   };
   calc(100);
 
-  const valid1 = new Validator({
-    selector: '#form1',
-    pattern: {
-      name: /^[а-яА-ЯЁ -]*$/,
-    },
-    method: {
-      'form1-phone': [['notEmpty'], ['pattern', 'phone']],
-      'form1-email': [['notEmpty'], ['pattern', 'email']],
-      'form1-name': [['notEmpty'], ['pattern', 'name']],
-    },
-  });
-  const valid2 = new Validator({
-    selector: '#form2',
-    pattern: {
-      name: /^[а-яА-ЯЁ -]*$/,
-      message: /^[а-яА-ЯЁ -]*$/,
-    },
-    method: {
-      'form2-phone': [['notEmpty'], ['pattern', 'phone']],
-      'form2-email': [['notEmpty'], ['pattern', 'email']],
-      'form2-name': [['notEmpty'], ['pattern', 'name']],
-      'form2-message': [['notEmpty'], ['pattern', 'message']],
-    },
-  });
-  const valid3 = new Validator({
-    selector: '#form3',
-    pattern: {
-      name: /^[а-яА-ЯЁ -]*$/,
-    },
-    method: {
-      'form3-name': [['notEmpty'], ['pattern', 'name']],
-      'form3-phone': [['notEmpty'], ['pattern', 'phone']],
-      'form3-email': [['notEmpty'], ['pattern', 'email']],
-    },
-  });
+  // send-ajax-form
+  const sendForm = (formId) => {
+    const errorMsg = "Что-то пошло не так...",
+      loadMsg = "Загрузка...",
+      successMsg = "Сообщение отправлено! Скоро с Вами свяжемся!";
 
-  valid1.init();
-  valid2.init();
-  valid3.init();
+    const form = document.getElementById(formId);
+    const statusMessage = document.createElement('div');
+
+    const postData = (body, outputData, errorData) => {
+      const request = new XMLHttpRequest();
+      request.addEventListener('readystatechange', () => {
+        if (request.readyState !== 4) return;
+        if (request.status === 200) {
+          outputData();
+        } else {
+          errorData(request.status);
+        }
+      })
+      request.open('POST', 'server.php');
+      request.setRequestHeader('Content-Type', 'application/json');
+      request.send(JSON.stringify(body));
+    }
+
+    statusMessage.style.cssText = 'font-size: 2rem;';
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const formData = new FormData(form);
+      let body = {};
+      for (let val of formData.entries()) {
+        body[val[0]] = val[1];
+      }
+      form.appendChild(statusMessage);
+      statusMessage.textContent = loadMsg;
+      postData(body,
+        () => {
+          statusMessage.textContent = successMsg;
+          form.reset();
+        } ,
+        (error) => {
+          statusMessage.textContent = errorMsg;
+          console.error(error);
+        });
+    })
+
+
+  }
+  sendForm('form1');
+  sendForm('form2');
+  sendForm('form3');
 });
