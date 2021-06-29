@@ -473,19 +473,21 @@ window.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById(formId);
     const statusMessage = document.createElement('div');
 
-    const postData = (body, outputData, errorData) => {
-      const request = new XMLHttpRequest();
-      request.addEventListener('readystatechange', () => {
-        if (request.readyState !== 4) return;
-        if (request.status === 200) {
-          outputData();
-        } else {
-          errorData(request.status);
-        }
-      })
-      request.open('POST', 'server.php');
-      request.setRequestHeader('Content-Type', 'application/json');
-      request.send(JSON.stringify(body));
+    const postData = (body) => {
+      return new Promise((resolve, reject) => {
+        const request = new XMLHttpRequest();
+        request.addEventListener('readystatechange', () => {
+          if (request.readyState !== 4) return;
+          if (request.status === 200) {
+            resolve();
+          } else {
+            reject(request.statusText);
+          }
+        })
+        request.open('POST', 'server.php');
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.send(JSON.stringify(body));
+      });
     }
 
     statusMessage.style.cssText = 'font-size: 2rem;';
@@ -498,15 +500,18 @@ window.addEventListener('DOMContentLoaded', () => {
       }
       form.appendChild(statusMessage);
       statusMessage.innerHTML = loadMsg;
-      postData(body,
-        () => {
+
+      postData(body)
+        .then(() => {
           statusMessage.textContent = successMsg;
           form.reset();
-        } ,
-        (error) => {
+          setTimeout(() => {statusMessage.textContent = ""}, 5000);
+        })
+        .catch(error => {
           statusMessage.textContent = errorMsg;
           console.error(error);
-        });
+          setTimeout(() => {statusMessage.textContent = ""}, 5000);
+        })
     })
 
 
