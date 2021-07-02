@@ -1,3 +1,5 @@
+import maskPhone from './maskPhone';
+
 const inputs = () => {
   const nameReplacer = function () {
     this.value = this.value.replace(/[^а-яё ]/gi, '');
@@ -9,7 +11,7 @@ const inputs = () => {
     this.value = this.value.replace(/(?![~@\-!_\.\*'])[\W\d]/gi, '');
   };
   const phoneReplacer = function () {
-    this.value = this.value.replace(/(?![+])\D/gi, '');
+    this.value = this.value.replace(/(?![\(\)\+])\D/gi, '');
   };
   const trimStr = function (elem) {
     elem.value = elem.value.replace(/^[ \-]*/, '');
@@ -32,6 +34,7 @@ const inputs = () => {
     mailInputs = document.querySelectorAll('[name="user_email"]'),
     phoneInputs = document.querySelectorAll('[name="user_phone"]');
 
+  maskPhone('.form-phone');
   messageInputs.addEventListener('input', msgReplacer);
   messageInputs.addEventListener('blur', function () {
     trimStr(this);
@@ -63,4 +66,5 @@ const inputs = () => {
     });
   });
 };
+
 export default inputs;

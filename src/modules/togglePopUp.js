@@ -1,12 +1,29 @@
 const togglePopUp = () => {
   const popup = document.querySelector('.popup'),
     popupBtn = document.querySelectorAll('.popup-btn'),
-    popupContent = document.querySelector('.popup-content');
+    popupContent = document.querySelector('.popup-content'),
+    body = document.querySelector('body');
 
   let clientWidth = document.documentElement.clientWidth;
   window.addEventListener('resize', () => {
     clientWidth = document.documentElement.clientWidth;
   });
+
+  //определяем ширину скролла
+  const returnScrollWidth = () => {
+    let div = document.createElement('div');
+
+    div.style.overflowY = 'scroll';
+    div.style.width = '50px';
+    div.style.height = '50px';
+
+    // мы должны вставить элемент в документ, иначе размеры будут равны 0
+    document.body.append(div);
+    let scrollWidth = div.offsetWidth - div.clientWidth;
+
+    div.remove();
+    return scrollWidth;
+  };
 
   const popupAnimate = ({
     duration,
@@ -42,16 +59,27 @@ const togglePopUp = () => {
       });
       setTimeout(() => {
         popup.classList.remove('active');
+        body.classList.remove('no-scroll');
+        body.style.paddingRight = '';
       }, 800);
     } else {
       popupContent.style.top = '';
       popup.classList.remove('active');
+      body.classList.remove('no-scroll');
+      body.style.paddingRight = '';
     }
   };
+
+  body.addEventListener('keydown', event => {
+    const key = event.key;
+    if (popup.classList.contains('active')) closePopUp();
+  })
 
   popupBtn.forEach((elem) => {
     elem.addEventListener('click', () => {
       popup.classList.add('active');
+      body.classList.add('no-scroll');
+      body.style.paddingRight = returnScrollWidth() + 'px';
       popupContent.style.top = '';
       if (clientWidth >= 768) {
         popupAnimate({

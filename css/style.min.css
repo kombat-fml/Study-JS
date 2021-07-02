@@ -197,6 +197,10 @@ body .btn:hover {
 body button:hover {
   background-color: #ade4f4;
 }
+body.no-scroll {
+  overflow: hidden;
+  padding-right: 0
+}
 main {
   padding-top: 1rem;
   padding-bottom: 2.6rem;
