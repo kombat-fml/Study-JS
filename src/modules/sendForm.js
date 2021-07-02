@@ -8,13 +8,13 @@ const sendForm = (formId) => {
   const form = document.getElementById(formId);
   const statusMessage = document.createElement('div');
 
-  const postData = (formData) => {
+  const postData = (data) => {
     return fetch('server.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: formData,
+      body: JSON.stringify(data),
     });
   }
 
@@ -22,10 +22,12 @@ const sendForm = (formId) => {
   form.addEventListener('submit', (event) => {
     event.preventDefault();
     const formData = new FormData(form);
+    const data = {};
+    formData.forEach((value, key) => data[key] = value);
     form.appendChild(statusMessage);
     statusMessage.innerHTML = loadMsg;
-
-    postData(formData)
+    console.log(data);
+    postData(data)
       .then((response) => {
         if (response.status !== 200) {
           throw new Error('status network not 200!')
