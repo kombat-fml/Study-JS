@@ -26,7 +26,6 @@ const sendForm = (formId) => {
     formData.forEach((value, key) => data[key] = value);
     form.appendChild(statusMessage);
     statusMessage.innerHTML = loadMsg;
-    console.log(data);
     postData(data)
       .then((response) => {
         if (response.status !== 200) {
