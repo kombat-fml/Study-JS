@@ -9,8 +9,9 @@ module.exports = {
   devServer: {
     open: true,
     port: 8080,
-    hot: true,
+    liveReload: true,
     writeToDisk: true,
+    useLocalIp: true,
   },
   module: {
     rules: [{
