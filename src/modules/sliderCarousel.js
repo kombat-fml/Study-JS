@@ -61,7 +61,7 @@ class SliderCarousel {
         display: flex !important;
         align-items: center;
         justify-content: center;
-        flex: 0 0 ${this.options.widthSlide - 2}%;
+        flex: 0 0 ${this.options.widthSlide}%;
         margin: 0;
       }
     `;
@@ -140,12 +140,14 @@ class SliderCarousel {
           if (widthWindow < allResponse[i]) {
             this.slidesToShow = this.responsive[i].slidesToShow;
             this.options.widthSlide = Math.floor(100 / this.slidesToShow);
+            this.wrap.style.transform = `translateX(-${this.options.position * this.options.widthSlide}%)`;
             this.addStyle();
           }
         }
       } else {
         this.slidesToShow = slidesToShowDefault;
         this.options.widthSlide = Math.floor(100 / this.slidesToShow);
+        this.wrap.style.transform = `translateX(-${this.options.position * this.options.widthSlide}%)`;
         this.addStyle();
       }
     };
