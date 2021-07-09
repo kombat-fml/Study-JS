@@ -62,7 +62,8 @@ const renderAutocompleteList = (cities) => {
 };
 
 const getData = (data) => {
-  data['RU'].forEach((item) => {
+  console.log(data);
+  data.forEach((item) => {
     countries.set(item.country, { count: +item.count, cities: item.cities.sort((a, b) => b.count - a.count) });
     cities.push(...item.cities);
     renderList(item.country, 'default');
@@ -71,7 +72,7 @@ const getData = (data) => {
 };
 
 const request = () => {
-  fetch('db_cities.json')
+  fetch('db_cities.json', {data : 'RU'} )
     .then((response) => {
       if (response.status !== 200) {
         throw new Error('status network not 200!');
