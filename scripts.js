@@ -10,6 +10,7 @@ const input = document.getElementById('select-cities'),
   listAutocompleteCol = listAutocomplete.querySelector('.dropdown-lists__col'),
   button = document.querySelector('.button'),
   closeButton = document.querySelector('.close-button'),
+  loading = document.querySelector('.loading'),
   countries = new Map(),
   cities = [];
 
@@ -66,6 +67,7 @@ const getData = (data) => {
     cities.push(...item.cities);
     renderList(item.country, 'default');
   });
+  hideEl(loading);
 };
 
 const request = () => {
@@ -87,21 +89,31 @@ const showEl = (el) => {
 const hideEl = (el) => {
   el.classList.remove('active');
 };
+const animateList = (start, end, direction) => {
+  const step = direction === 'left' ? -1 : 1;
+  let counter = start;
+  requestAnimationFrame(function animate() {
+    counter += step;
+    dropdownLists.style.transform = `translateX(${counter}%)`;
+    if (counter !== end) requestAnimationFrame(animate);
+  });
+};
 
 const clickToDropdown = (event) => {
   const target = event.target,
     country = target.closest('.dropdown-lists__countryBlock').dataset.country;
-  console.log(target);
   if (target.closest('.dropdown-lists__total-line')) {
     applyInputValue(target.closest('.dropdown-lists__total-line').children[0]);
     if (target.closest('.dropdown-lists__list--default')) {
       listSelectCol.textContent = '';
       renderList(country);
-      showEl(listSelect);
-      hideEl(listDefault);
+      // showEl(listSelect);
+      animateList(0, -100, 'left');
+      // hideEl(listDefault);
     } else {
-      hideEl(listSelect);
-      showEl(listDefault);
+      // hideEl(listSelect);
+      animateList(-100, 0, 'right');
+      // showEl(listDefault);
     }
   } else if (target.closest('.dropdown-lists__line')) {
     const cityEl = target.closest('.dropdown-lists__line').children[0];
@@ -113,8 +125,10 @@ const clickToDropdown = (event) => {
 
 const closeButtonHandler = () => {
   input.value = '';
-  hideEl(listDefault);
-  hideEl(listSelect);
+  showEl(listDefault);
+  showEl(listSelect);
+  hideEl(dropdownLists);
+  dropdownLists.style.transform = '';
   hideEl(listAutocomplete);
   hideEl(closeButton);
   hideEl(button);
@@ -136,12 +150,14 @@ const changeInput = function () {
     hideEl(listDefault);
     showEl(listAutocomplete);
     showEl(closeButton);
+    dropdownLists.style.transform = '';
   } else {
-    hideEl(listSelect);
+    showEl(listSelect);
     hideEl(closeButton);
     hideEl(listAutocomplete);
     showEl(listDefault);
     hideEl(button);
+    dropdownLists.style.transform = '';
   }
 };
 
@@ -156,10 +172,6 @@ const addListeners = () => {
   input.addEventListener('input', changeInput);
 
   closeButton.addEventListener('click', closeButtonHandler);
-
-  // input.addEventListener('blur', () => {
-  //   hideEl(dropdownLists);
-  // });
 };
 
 request();
