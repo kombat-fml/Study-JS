@@ -11,11 +11,11 @@ const input = document.getElementById('select-cities'),
   button = document.querySelector('.button'),
   closeButton = document.querySelector('.close-button'),
   loading = document.querySelector('.loading'),
-  countries = new Map(),
+  countries = [],
   cities = [];
 
 const renderList = (country, list = 'none') => {
-  const currentCountry = countries.get(country),
+  const currentCountry = countries.find(item => item.country === country),
     countData = list === 'default' ? 3 : currentCountry.cities.length,
     currentList = list === 'default' ? listDefaultCol : listSelectCol,
     block = document.createElement('div');
@@ -61,25 +61,22 @@ const renderAutocompleteList = (cities) => {
   listAutocomplete.appendChild(block);
 };
 
-const getData = (data) => {
-  console.log(data);
-  data.forEach((item) => {
-    countries.set(item.country, { count: +item.count, cities: item.cities.sort((a, b) => b.count - a.count) });
+const getData = (data, lang) => {
+  data[lang].forEach((item) => {
+    countries.push({country: item.country, count: +item.count, cities: item.cities.sort((a, b) => b.count - a.count)});
     cities.push(...item.cities);
-    renderList(item.country, 'default');
   });
-  hideEl(loading);
 };
 
-const request = () => {
-  fetch('db_cities.json', {data : 'RU'} )
+const request = async (lang) => {
+  let res = await fetch('db_cities.json')
     .then((response) => {
       if (response.status !== 200) {
         throw new Error('status network not 200!');
       }
       return response.json();
     })
-    .then((result) => getData(result))
+    .then((result) => getData(result, lang))
     .catch((error) => console.error('Ошибка запроса: ', error));
 };
 
@@ -108,13 +105,9 @@ const clickToDropdown = (event) => {
     if (target.closest('.dropdown-lists__list--default')) {
       listSelectCol.textContent = '';
       renderList(country);
-      // showEl(listSelect);
       animateList(0, -100, 'left');
-      // hideEl(listDefault);
     } else {
-      // hideEl(listSelect);
       animateList(-100, 0, 'right');
-      // showEl(listDefault);
     }
   } else if (target.closest('.dropdown-lists__line')) {
     const cityEl = target.closest('.dropdown-lists__line').children[0];
@@ -175,5 +168,67 @@ const addListeners = () => {
   closeButton.addEventListener('click', closeButtonHandler);
 };
 
-request();
-addListeners();
+const getLocale = () => {
+  let locale;
+    do {
+        locale = prompt('Введите локализацию: RU, EN или DE').trim();
+    } while (!locale || (locale !== 'RU' && locale !== 'EN' && locale !== 'DE'));
+
+    document.cookie = `locale=${locale}`;
+    return locale;
+}
+
+const setLocalStorage = () => {
+  localStorage.setItem('countries', JSON.stringify(countries));
+  localStorage.setItem('cities', JSON.stringify(cities));
+}
+
+
+const clearLocalStorage = () => {
+  localStorage.clear();
+}
+
+const getLocalStorage = () => {
+  JSON.parse(localStorage.getItem('countries')).forEach(item => {
+    countries.push({country: item.country, count: +item.count, cities: item.cities.sort((a, b) => b.count - a.count)})
+  });
+  cities.push(...JSON.parse(localStorage.getItem('cities')));
+}
+
+const sortAndRender = (lang) => {
+
+  countries.sort((a, b) => {
+    switch (`${lang}-${a.country}`) {
+      case 'RU-Россия':
+      case 'EN-United Kingdom':
+      case 'DE-Deutschland':
+        return -1;
+      default:
+        return 1;
+    }
+  })
+
+  countries.forEach(item => {
+    renderList(item.country, 'default');
+  })
+}
+
+const start = async () => {
+  let lang = document.cookie.slice(-2);
+  if (!lang) {
+    lang = getLocale();
+    await request(lang);
+    clearLocalStorage();
+    setLocalStorage();
+  } else {
+    getLocalStorage();
+  }
+  sortAndRender(lang);
+
+  hideEl(loading);
+  addListeners();
+
+
+}
+
+start();
